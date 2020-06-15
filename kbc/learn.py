@@ -11,10 +11,10 @@ from typing import Dict
 import torch
 from torch import optim
 
-from kbc.datasets import Dataset
-from kbc.models import CP, ComplEx
-from kbc.regularizers import F2, N3
-from kbc.optimizers import KBCOptimizer
+from datasets import Dataset
+from models import CP, ComplEx
+from regularizers import F2, N3
+from optimizers import KBCOptimizer
 
 
 big_datasets = ['FB15K', 'WN', 'WN18RR', 'FB237', 'YAGO3-10']
@@ -99,7 +99,11 @@ regularizer = {
     'N3': N3(args.reg),
 }[args.regularizer]
 
-device = 'cuda'
+has_cuda = torch.cuda.is_available()
+if has_cuda:
+    device = 'cuda'
+else:
+    device = 'cpu'
 model.to(device)
 
 optim_method = {
@@ -108,7 +112,9 @@ optim_method = {
     'SGD': lambda: optim.SGD(model.parameters(), lr=args.learning_rate)
 }[args.optimizer]()
 
-optimizer = KBCOptimizer(model, regularizer, optim_method, args.batch_size)
+print(has_cuda)
+optimizer = KBCOptimizer(
+    model, regularizer, optim_method, args.batch_size, has_cuda=has_cuda)
 
 
 def avg_both(mrrs: Dict[str, float], hits: Dict[str, torch.FloatTensor]):
@@ -125,21 +131,28 @@ def avg_both(mrrs: Dict[str, float], hits: Dict[str, torch.FloatTensor]):
 
 cur_loss = 0
 curve = {'train': [], 'valid': [], 'test': []}
+valid_mrr = 0.0
 for e in range(args.max_epochs):
     cur_loss = optimizer.epoch(examples)
 
     if (e + 1) % args.valid == 0:
         valid, test, train = [
-            avg_both(*dataset.eval(model, split, -1 if split != 'train' else 50000))
+            avg_both(*dataset.eval(model, split, -
+                                   1 if split != 'train' else 50000))
             for split in ['valid', 'test', 'train']
         ]
-
         curve['valid'].append(valid)
         curve['test'].append(test)
         curve['train'].append(train)
 
         print("\t TRAIN: ", train)
         print("\t VALID : ", valid)
+        if valid['MRR'] > valid_mrr:
+            print("Best valid MRR achieved till now")
+            print("Saving model...")
+            valid_mrr = valid['MRR']
+
+            torch.save(model.state_dict(), "best_valid_model.pt")
 
 results = dataset.eval(model, 'test', -1)
 print("\n\nTEST : ", results)

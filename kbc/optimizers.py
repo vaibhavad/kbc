@@ -10,20 +10,21 @@ import torch
 from torch import nn
 from torch import optim
 
-from kbc.models import KBCModel
-from kbc.regularizers import Regularizer
+from models import KBCModel
+from regularizers import Regularizer
 
 
 class KBCOptimizer(object):
     def __init__(
             self, model: KBCModel, regularizer: Regularizer, optimizer: optim.Optimizer, batch_size: int = 256,
-            verbose: bool = True
+            verbose: bool = True, has_cuda: bool = True
     ):
         self.model = model
         self.regularizer = regularizer
         self.optimizer = optimizer
         self.batch_size = batch_size
         self.verbose = verbose
+        self.has_cuda = has_cuda
 
     def epoch(self, examples: torch.LongTensor):
         actual_examples = examples[torch.randperm(examples.shape[0]), :]
@@ -34,7 +35,9 @@ class KBCOptimizer(object):
             while b_begin < examples.shape[0]:
                 input_batch = actual_examples[
                     b_begin:b_begin + self.batch_size
-                ].cuda()
+                ]
+                if self.has_cuda:
+                    input_batch = input_batch.cuda()
 
                 predictions, factors = self.model.forward(input_batch)
                 truth = input_batch[:, 2]

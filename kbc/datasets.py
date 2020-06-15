@@ -12,7 +12,7 @@ from typing import Dict, Tuple, List
 
 import numpy as np
 import torch
-from kbc.models import KBCModel
+from models import KBCModel
 
 
 DATA_PATH = Path(pkg_resources.resource_filename('kbc', 'data/'))
@@ -33,7 +33,8 @@ class Dataset(object):
         self.n_predicates *= 2
 
         inp_f = open(str(self.root / f'to_skip.pickle'), 'rb')
-        self.to_skip: Dict[str, Dict[Tuple[int, int], List[int]]] = pickle.load(inp_f)
+        self.to_skip: Dict[str, Dict[Tuple[int, int],
+                                     List[int]]] = pickle.load(inp_f)
         inp_f.close()
 
     def get_examples(self, split):
