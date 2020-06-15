@@ -147,6 +147,7 @@ for e in range(args.max_epochs):
 
         print("\t TRAIN: ", train)
         print("\t VALID : ", valid)
+        print("\t TEST : ", test)
         if valid['MRR'] > valid_mrr:
             print("Best valid MRR achieved till now")
             print("Saving model...")
