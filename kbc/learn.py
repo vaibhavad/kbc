@@ -29,7 +29,7 @@ parser.add_argument(
     help="Dataset in {}".format(datasets)
 )
 
-models = ['CP', 'ComplEx']
+models = ['CP', 'ComplEx'. 'DistMultß']
 parser.add_argument(
     '--model', choices=models,
     help="Model in {}".format(models)
@@ -153,7 +153,8 @@ for e in range(args.max_epochs):
             print("Saving model...")
             valid_mrr = valid['MRR']
 
-            torch.save(model.state_dict(), "best_valid_model.pt")
+            torch.save(model.state_dict(), "best_valid_model" +
+                       args.models + "ß.pt")
 
 results = dataset.eval(model, 'test', -1)
 print("\n\nTEST : ", results)
