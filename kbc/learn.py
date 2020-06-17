@@ -154,7 +154,7 @@ for e in range(args.max_epochs):
             print("Saving model...")
             valid_mrr = valid['MRR']
 
-            torch.save(model.state_dict(), "best_valid_model" +
+            torch.save(model.state_dict(), "best_valid_model_" +
                        args.model + ".pt")
 
 results = dataset.eval(model, 'test', -1)
