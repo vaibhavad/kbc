@@ -92,6 +92,7 @@ print(dataset.get_shape())
 model = {
     'CP': lambda: CP(dataset.get_shape(), args.rank, args.init),
     'ComplEx': lambda: ComplEx(dataset.get_shape(), args.rank, args.init),
+    'DistMult': lambda: ComplEx(dataset.get_shape(), args.rank, args.init)
 }[args.model]()
 
 regularizer = {
