@@ -29,7 +29,7 @@ parser.add_argument(
     help="Dataset in {}".format(datasets)
 )
 
-models = ['CP', 'ComplEx'. 'DistMult']
+models = ['CP', 'ComplEx', 'DistMult']
 parser.add_argument(
     '--model', choices=models,
     help="Model in {}".format(models)
