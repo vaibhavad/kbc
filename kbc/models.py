@@ -193,22 +193,22 @@ class DistMult(KBCModel):
         self.rank = rank
 
         self.ent = nn.Embedding(sizes[0], rank, sparse=True)
-        self.rel = nn.Embedding(sizes[1], rank, sparse=True
+        self.rel = nn.Embedding(sizes[1], rank, sparse=True)
 
         self.ent.weight.data *= init_size
         self.rel.weight.data *= init_size
 
     def score(self, x):
-        lhs=self.ent(x[:, 0])
-        rel=self.rel(x[:, 1])
-        rhs=self.ent(x[:, 2])
+        lhs = self.ent(x[:, 0])
+        rel = self.rel(x[:, 1])
+        rhs = self.ent(x[:, 2])
 
         return torch.sum(lhs * rel * rhs, 1, keepdim=True)
 
     def forward(self, x):
-        lhs=self.ent(x[:, 0])
-        rel=self.rel(x[:, 1])
-        rhs=self.ent(x[:, 2])
+        lhs = self.ent(x[:, 0])
+        rel = self.rel(x[:, 1])
+        rhs = self.ent(x[:, 2])
         return (lhs * rel) @ self.rhs.weight.t(), (lhs, rel, rhs)
 
     def get_rhs(self, chunk_begin: int, chunk_size: int):
