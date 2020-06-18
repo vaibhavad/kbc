@@ -188,7 +188,7 @@ class DistMult(KBCModel):
             self, sizes: Tuple[int, int, int], rank: int,
             init_size: float = 1e-3
     ):
-        super(CP, self).__init__()
+        super(DistMult, self).__init__()
         self.sizes = sizes
         self.rank = rank
 
