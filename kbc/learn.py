@@ -12,7 +12,7 @@ import torch
 from torch import optim
 
 from datasets import Dataset
-from models import CP, ComplEx
+from models import CP, ComplEx, DistMult
 from regularizers import F2, N3
 from optimizers import KBCOptimizer
 
@@ -92,7 +92,7 @@ print(dataset.get_shape())
 model = {
     'CP': lambda: CP(dataset.get_shape(), args.rank, args.init),
     'ComplEx': lambda: ComplEx(dataset.get_shape(), args.rank, args.init),
-    'DistMult': lambda: ComplEx(dataset.get_shape(), args.rank, args.init)
+    'DistMult': lambda: DistMult(dataset.get_shape(), args.rank, args.init)
 }[args.model]()
 
 regularizer = {
