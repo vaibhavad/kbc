@@ -209,7 +209,7 @@ class DistMult(KBCModel):
         lhs = self.ent(x[:, 0])
         rel = self.rel(x[:, 1])
         rhs = self.ent(x[:, 2])
-        return (lhs * rel) @ self.rhs.weight.t(), (lhs, rel, rhs)
+        return (lhs * rel) @ self.ent.weight.t(), (lhs, rel, rhs)
 
     def get_rhs(self, chunk_begin: int, chunk_size: int):
         return self.ent.weight.data[
